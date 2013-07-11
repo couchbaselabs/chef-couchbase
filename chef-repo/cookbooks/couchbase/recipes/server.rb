@@ -108,11 +108,3 @@ couchbase_settings "web" do
   password node['couchbase']['server']['password']
 end
 
-log "Joining in a new cluster ... "
-log ("/opt/couchbase/bin/couchbase-cli rebalance ...")
-log ("/opt/couchbase/bin/couchbase-cli rebalance -c guinep-s10503.sc.couchbase.com --server-add=172.23.121.7 --server-add-username=Administrator --server-add-password=password -p password -u Administrator")
-
-execute "Join cluster ... NOW .." do
-        command ("/opt/couchbase/bin/couchbase-cli rebalance -c guinep-s10503.sc.couchbase.com --server-add=172.23.121.10 --server-add-username=Administrator --server-add-password=password -p password -u Administrator")
-        action :run
-end
