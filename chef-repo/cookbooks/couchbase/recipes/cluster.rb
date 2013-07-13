@@ -110,23 +110,27 @@ end
 
 prefix = "ns_1@"
 separator=","
-orig_node = "172.23.105.62"
-add_node = prefix+orig_node
-dbnodes = search(:node, 'platform:centos')
-log " Sample Add Nodes to form a Centos Cluster"
+#master_nodes = search(:node, 'role:master')
+#master_nodes.each do |node|
+#	master_node = "#{node["ipaddress"]}"
+#end
+master_node = "172.23.105.62"
+add_node = prefix+master_node
+dbnodes = search(:node, 'platform:centos AND role:node')
+log " Add Nodes to form a Centos Cluster"
 cluster_node = Hash.new("cluster")
 dbnodes.each do |node|
 	add_node=add_node+separator+prefix+"#{node["ipaddress"]}"
 	log " Stuff #{add_node} stuff .."	
 	execute "Add nodes sequentially.." do
-		command "curl -v -u Administrator:password -X POST  'http://#{orig_node}:8091/controller/addNode' -d 'hostname=#{node["ipaddress"]}' -d 'user=Administrator&password=password'"
+		command "curl -v -u Administrator:password -X POST  'http://#{master_node}:8091/controller/addNode' -d 'hostname=#{node["ipaddress"]}' -d 'user=Administrator&password=password'"
 		action :run
 	end
 end
 
 log" Finale - Rebalance in the cluster..."
 execute "Add nodes sequentially.." do
-      command "curl -v -u Administrator:password -X POST  'http://#{orig_node}:8091/controller/rebalance' -d 'ejectedNodes=' -d 'knownNodes=#{add_node}'"
+      command "curl -v -u Administrator:password -X POST  'http://#{master_node}:8091/controller/rebalance' -d 'ejectedNodes=' -d 'knownNodes=#{add_node}'"
       action :run
 end
 
