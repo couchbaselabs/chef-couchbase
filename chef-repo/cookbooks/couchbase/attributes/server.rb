@@ -37,3 +37,8 @@ default['couchbase']['server']['password'] = "password"
 
 default['couchbase']['server']['memory_quota_mb'] = 4000
 #default['couchbase']['server']['memory_quota_mb'] = Couchbase::MaxMemoryQuotaCalculator.from_node(node).in_megabytes
+
+default['source']['bucket'] = "default"
+default['remote']['bucket'] = "default"
+default['cluster_name'] = "west_cluster"
+default['remote_cluster'] = "remote_cluster"
