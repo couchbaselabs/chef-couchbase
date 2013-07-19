@@ -2,13 +2,21 @@
 # Cookbook Name:: couchbase
 # Recipe:: xdcr
 #
+remote_cluster_name = "east_cluster"
+src_cluster_name ="west_cluster"
+
+src_cluster = search(:node, "role:#{src_cluster_name}")
+src_node=src_cluster[0]["ipaddress"]
+
+remote_cluster = search(:node, "role:#{remote_cluster_name}")
+remote_node=remote_cluster[0]["ipaddress"]
+
+username = node['couchbase']['server']['username']
+password = node['couchbase']['server']['password']
 
 Chef::Log.info "Get uuid information of the remote cluster"
-s_uuid = `curl 'http://Administrator:password@172.23.105.63:8091/pools' | python -mjson.tool |sed -e 's/[","]/''/g' | awk -F "uuid: " '{print $2}'`
+s_uuid = `curl 'http://#{username}:#{password}@#{remote_node}:8091/pools' | python -mjson.tool |sed -e 's/[","]/''/g' | awk -F "uuid: " '{print $2}'`
 uuid= s_uuid.strip
-
-remote_cluster = search(:node, 'role:east_cluster')
-remote_node=remote_cluster[0]["ipaddress"]
 
 xdcr_ref "Create XDCR Replication reference  " do
         uuid uuid

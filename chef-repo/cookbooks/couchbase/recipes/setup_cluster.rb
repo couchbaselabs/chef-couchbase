@@ -4,7 +4,7 @@
 #
 
 #cluster_name = node["cluster_name"]
-cluster_name = east_cluster
+cluster_name = "west_cluster"
 prefix = "ns_1@"
 separator=","
 known_nodes=prefix+self.node["ipaddress"]
@@ -30,10 +30,16 @@ cluster_rebal "Rebalance-In Nodes to form a cluster  " do
         password node['couchbase']['server']['password']
 end
 
-couchbase_bucket "default" do
-  memory_quota_mb 100
-
-  username node['couchbase']['server']['username']
-  password node['couchbase']['server']['password']
+ruby_block "wait for rebalance completion " do
+  block do
+    sleep 5
+  end
 end
+
+#couchbase_bucket "#{cluster_name}" do
+#  memory_quota_mb 100
+
+#  username node['couchbase']['server']['username']
+#  password node['couchbase']['server']['password']
+#end
 
